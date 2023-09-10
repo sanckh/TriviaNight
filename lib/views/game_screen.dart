@@ -1,9 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:trivia_night/models/trivia_model.dart';
 import 'package:trivia_night/widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -13,8 +13,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   String question = "What is the capital of Thailand?";
   bool isLoading = false;
-  int _currentIndex = 0;
-  Map<String, String> currentTrivia = {};
+  final TextEditingController _controller = TextEditingController();
   // For animations
   Key _key = UniqueKey();
 
@@ -27,7 +26,7 @@ class _GameScreenState extends State<GameScreen> {
             return Text('Score: ${trivia.score}');
           },
         ),
-      ), // <--- Closing parenthesis should be here.
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,9 +42,21 @@ class _GameScreenState extends State<GameScreen> {
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
             ),
+            TextFormField(
+              controller: _controller,
+              decoration: InputDecoration(
+                labelText: 'Enter your answer',
+              ),
+            ),
             ElevatedButton(
-              onPressed:
-                  _fetchNewQuestion, // Make sure you have this function defined or replace it with your logic
+              onPressed: () {
+                checkAnswer(_controller.text);
+                _controller.clear();
+              },
+              child: Text('Submit Answer'),
+            ),
+            ElevatedButton(
+              onPressed: _fetchNewQuestion,
               child: Text('Next Question'),
             ),
           ],
@@ -54,36 +65,43 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
+  void _fetchNewQuestion() async {
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final QuerySnapshot snapshot = await _db.collection('trivia_questions').get();
+    final List<QueryDocumentSnapshot> documents = snapshot.docs;
 
-  void _fetchNewQuestion() {
     final random = Random();
-    _currentIndex = random.nextInt(triviaData.length); // Get a random index
-    currentTrivia = triviaData[_currentIndex]; // Fetch the trivia at the random index
+    final randomIndex = random.nextInt(documents.length); // Get a random index
+    final doc = documents[randomIndex];
+
     setState(() {
-      question = currentTrivia['question']!;
+      question = doc['question'];
     });
   }
 
   void checkAnswer(String userAnswer) {
-    final correctAnswer = currentTrivia['answer'];
-    final isCorrect = (userAnswer == correctAnswer);
+    // Assuming 'currentTrivia' is populated with the current question and answer
+    final correctAnswer = question; // You should actually get this from your Firestore document
 
-    if (isCorrect) {
-      // Increment score, show snackbar, etc.
+    String message;
+
+    if (userAnswer == "" || userAnswer.trim().isEmpty) {
+      message = "You didn't enter an answer!";
+    } else {
+      final isCorrect = (userAnswer.toLowerCase() == correctAnswer.toLowerCase());
+
+      if (isCorrect) {
+        Provider.of<TriviaModel>(context, listen: false).incrementScore();
+        message = 'Correct!';
+      } else {
+        message = 'Wrong answer. The correct answer is $correctAnswer.';
+      }
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
-
-  // This is a simple placeholder. The actual questions and answers will be fetched from Firestore later on.
-final List<Map<String, String>> triviaData = [
-  {
-    'question': 'What is the capital of Thailand?',
-    'answer': 'Bangkok'
-  },
-  {
-    'question': 'What is the smallest planet in our solar system?',
-    'answer': 'Mercury'
-  },
-  // Add more question-answer pairs here
-];
-
 }
