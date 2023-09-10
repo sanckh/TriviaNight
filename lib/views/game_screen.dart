@@ -1,11 +1,13 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:trivia_night/models/trivia_model.dart';
 import 'package:trivia_night/widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:trivia_night/services/trivia_api_service.dart';
 
 class GameScreen extends StatefulWidget {
+  final int category;
+  GameScreen({required this.category});
+
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -84,20 +86,20 @@ class _GameScreenState extends State<GameScreen> {
 
 
   void _fetchNewQuestion() async {
-    final FirebaseFirestore _db = FirebaseFirestore.instance;
-    final QuerySnapshot snapshot = await _db.collection('trivia_questions').get();
-    final List<QueryDocumentSnapshot> documents = snapshot.docs;
-
-    final random = Random();
-    final randomIndex = random.nextInt(documents.length); // Get a random index
-    final doc = documents[randomIndex];
+  try {
+    List<Map<String, dynamic>> triviaQuestions = await fetchTriviaQuestions(1, widget.category);
+    Map<String, dynamic> firstQuestion = triviaQuestions.first;
 
     setState(() {
-      question = doc['question'];
-      currentTrivia['question'] = doc['question'];
-      currentTrivia['answer'] = doc['answer'];
+      question = firstQuestion['question'];
+      currentTrivia['question'] = firstQuestion['question'];
+      currentTrivia['answer'] = firstQuestion['correct_answer'];
     });
+  } catch (e) {
+    print("Error fetching trivia questions: $e");
   }
+}
+
 
   void checkAnswer(String userAnswer) {
     // Assuming 'currentTrivia' is populated with the current question and answer

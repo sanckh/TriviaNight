@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trivia_night/views/game_screen.dart';
 
 class CategoryCard extends StatelessWidget {
   final String title;
-  CategoryCard(this.title);
+  final int id;
+  CategoryCard({required this.title, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -10,11 +12,19 @@ class CategoryCard extends StatelessWidget {
       margin: EdgeInsets.all(10),
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, '/game');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GameScreen(
+                category: id,
+              )
+            )
+          );
         },
         child: Center(
           child: Text(
             title,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
