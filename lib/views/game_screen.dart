@@ -11,7 +11,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  String question = "What is the capital of Thailand?";
+  String? question;
+  Map<String, String> currentTrivia = {};
   bool isLoading = false;
   final TextEditingController _controller = TextEditingController();
   // For animations
@@ -35,11 +36,17 @@ class _GameScreenState extends State<GameScreen> {
               duration: Duration(seconds: 1),
               child: isLoading
                   ? LoadingIndicator()
-                  : Text(
-                      question,
+                  : question != null 
+                  ? Text(
+                      currentTrivia['question']!,
                       key: _key,
                       style:
                           TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    )
+                    : Text(
+                      'Press Next Question to start!',
+                      key: _key,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
             ),
             TextFormField(
@@ -76,19 +83,21 @@ class _GameScreenState extends State<GameScreen> {
 
     setState(() {
       question = doc['question'];
+      currentTrivia['question'] = doc['question'];
+      currentTrivia['answer'] = doc['answer'];
     });
   }
 
   void checkAnswer(String userAnswer) {
     // Assuming 'currentTrivia' is populated with the current question and answer
-    final correctAnswer = question; // You should actually get this from your Firestore document
+    final correctAnswer = currentTrivia['answer']; //get this from Firestore document
 
     String message;
 
     if (userAnswer == "" || userAnswer.trim().isEmpty) {
       message = "You didn't enter an answer!";
     } else {
-      final isCorrect = (userAnswer.toLowerCase() == correctAnswer.toLowerCase());
+      final isCorrect = (userAnswer.toLowerCase() == correctAnswer!.toLowerCase());
 
       if (isCorrect) {
         Provider.of<TriviaModel>(context, listen: false).incrementScore();
