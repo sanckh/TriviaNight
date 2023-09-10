@@ -14,6 +14,7 @@ class _GameScreenState extends State<GameScreen> {
   String? question;
   Map<String, String> currentTrivia = {};
   bool isLoading = false;
+  bool isGameStarted = false;  // New variable to track game state
   final TextEditingController _controller = TextEditingController();
   // For animations
   Key _key = UniqueKey();
@@ -29,48 +30,58 @@ class _GameScreenState extends State<GameScreen> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedSwitcher(
-              duration: Duration(seconds: 1),
-              child: isLoading
-                  ? LoadingIndicator()
-                  : question != null 
-                  ? Text(
-                      currentTrivia['question']!,
-                      key: _key,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    )
-                    : Text(
-                      'Press Next Question to start!',
-                      key: _key,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-            ),
-            TextFormField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Enter your answer',
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                checkAnswer(_controller.text);
-                _controller.clear();
-              },
-              child: Text('Submit Answer'),
-            ),
-            ElevatedButton(
-              onPressed: _fetchNewQuestion,
-              child: Text('Next Question'),
-            ),
-          ],
-        ),
+        child: isGameStarted ? buildGameUI() : buildStartUI(),
       ),
     );
   }
+
+  Widget buildStartUI() {
+    return ElevatedButton(
+      onPressed: () {
+         _fetchNewQuestion();
+        setState(() {
+          isGameStarted = true;
+        });
+      },
+      child: Text('Start'),
+    );
+  }
+
+  Widget buildGameUI() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(seconds: 1),
+          child: isLoading
+              ? LoadingIndicator()
+              : Text(
+                  currentTrivia['question'] ?? 'Press Next Question to start!',
+                  key: _key,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+        ),
+        TextFormField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: 'Enter your answer',
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            checkAnswer(_controller.text);
+            _controller.clear();
+          },
+          child: Text('Submit Answer'),
+        ),
+        ElevatedButton(
+          onPressed: _fetchNewQuestion,
+          child: Text('Next Question'),
+        ),
+      ],
+    );
+  }
+
 
   void _fetchNewQuestion() async {
     final FirebaseFirestore _db = FirebaseFirestore.instance;
