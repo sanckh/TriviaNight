@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 class TriviaModel with ChangeNotifier {
   String _question;
@@ -7,6 +8,8 @@ class TriviaModel with ChangeNotifier {
   String get question => _question;
   String get answer => _answer;
   
+  int _score = 0;
+  int get score => _score;
   //constructor
   TriviaModel(this._answer, this._question);
 
@@ -17,6 +20,11 @@ class TriviaModel with ChangeNotifier {
 
   void setAnswer(String answer) {
     _answer = answer;
+    notifyListeners();
+  }
+
+  void incrementScore() {
+    _score += 1;
     notifyListeners();
   }
 }

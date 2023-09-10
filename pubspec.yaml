@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.5
+  cloud_firestore: ^4.4.0
+  http: ^0.13.5
+  html: ^0.15.0
+  html_unescape: ^2.0.0
 
 dev_dependencies:
   flutter_test:
