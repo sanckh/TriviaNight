@@ -10,7 +10,7 @@ dependencies:
   firebase_core: ^2.15.1
   flutter:
     sdk: flutter
-    provider: ^latest_version
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

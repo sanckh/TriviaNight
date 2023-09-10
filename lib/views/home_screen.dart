@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trivia_night/widgets/category_card.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -7,16 +8,18 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Trivia Categories'),
       ),
-      body: ListView(
+      body: Column(
         children: [
-          ListTile(
-            title: const Text('Science'),
-            onTap: () => Navigator.pushNamed(context, '/game'),
-          ),
-          ListTile(
-            title: const Text('History'),
-            onTap: () => Navigator.pushNamed(context, '/game'),
-          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 2,
+              children: [
+                CategoryCard('Science'),
+                CategoryCard('History'),
+                // Add more categories
+              ],
+            ),
+          )
         ],
       ),
     );
