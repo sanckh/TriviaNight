@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533464560946",
+    "project_id": "trivia-night-app",
+    "storage_bucket": "trivia-night-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533464560946:android:e3d898f8d66435fae1932b",
+        "android_client_info": {
+          "package_name": "com.example.trivia_night"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwn5GeNcZBlMPguqLnzteD1OqxgopVuck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
