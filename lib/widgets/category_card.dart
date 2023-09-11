@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trivia_night/utils/game_configuration.dart';
 import 'package:trivia_night/views/game_screen.dart';
 
@@ -23,9 +24,12 @@ class CategoryCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => GameScreen(
-                category: id,
-                gameConfiguration: gameConfiguration,
+              builder: (context) => ChangeNotifierProvider(
+                create:(context) => GameState(gameConfiguration.numPlayers),
+                child: GameScreen(
+                  category: id,
+                  gameConfiguration: gameConfiguration,
+                ),
               )
             )
           );

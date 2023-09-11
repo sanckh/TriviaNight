@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trivia_night/models/trivia_model.dart';
 import 'package:trivia_night/widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:trivia_night/services/trivia_api_service.dart';
@@ -12,43 +11,46 @@ class GameScreen extends StatefulWidget {
   GameScreen({
     required this.category,
     required this.gameConfiguration,
-    });
+  });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
-  
 }
-
-
 
 class _GameScreenState extends State<GameScreen> {
   String? question;
   Map<String, String> currentTrivia = {};
   bool isLoading = false;
-  bool isGameStarted = false;  // New variable to track game state
+  bool isGameStarted = false;
   final TextEditingController _controller = TextEditingController();
+  bool isMultipleChoice = false;
+  List<String> multipleChoiceOptions = [];
   // For animations
   Key _key = UniqueKey();
 
   @override
   void initState() {
     super.initState();
-    print("Number of Players: ${widget.gameConfiguration.numPlayers}");
-    print("Winning points: ${widget.gameConfiguration.winningPoints}");
   }
 
   @override
   Widget build(BuildContext context) {
+    final gameState = Provider.of<GameState>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Consumer<TriviaModel>(
-          builder: (context, trivia, child) {
-            return Text('Score: ${trivia.score}');
-          },
-        ),
+        title: Text('Game Screen'),
       ),
-      body: Center(
-        child: isGameStarted ? buildGameUI() : buildStartUI(),
+      body: Column(
+        children: [
+          // Display player scores
+          Text("Scores: ${gameState.playerScores.join(' - ')}"),
+
+          // Display whose turn it is
+          Text("Player ${gameState.currentPlayer + 1}'s Turn"),
+          Center(
+            child: isGameStarted ? buildGameUI() : buildStartUI(),
+          ),
+        ],
       ),
     );
   }
@@ -56,7 +58,7 @@ class _GameScreenState extends State<GameScreen> {
   Widget buildStartUI() {
     return ElevatedButton(
       onPressed: () {
-         _fetchNewQuestion();
+        _fetchNewQuestion();
         setState(() {
           isGameStarted = true;
         });
@@ -66,80 +68,155 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget buildGameUI() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        AnimatedSwitcher(
-          duration: Duration(seconds: 1),
-          child: isLoading
-              ? LoadingIndicator()
-              : Text(
-                  currentTrivia['question'] ?? 'Press Next Question to start!',
-                  key: _key,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-        ),
-        TextFormField(
-          controller: _controller,
-          decoration: InputDecoration(
-            labelText: 'Enter your answer',
+    List<String>? incorrectAnswers =
+        currentTrivia['incorrect_answers'] as List<String>?;
+    String? correctAnswer = currentTrivia['correct_answer'];
+
+    List<String> choices = [];
+
+    if (incorrectAnswers != null) {
+      choices.addAll(incorrectAnswers);
+    }
+    if (correctAnswer != null) {
+      choices.add(correctAnswer);
+    }
+
+    choices.shuffle();
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedSwitcher(
+            duration: Duration(seconds: 1),
+            child: isLoading
+                ? LoadingIndicator()
+                : Text(
+                    currentTrivia['question'] ??
+                        'Press Next Question to start!',
+                    key: _key,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
           ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            checkAnswer(_controller.text);
-            _controller.clear();
-          },
-          child: Text('Submit Answer'),
-        ),
-        ElevatedButton(
-          onPressed: _fetchNewQuestion,
-          child: Text('Next Question'),
-        ),
-      ],
+          ...choices.map((choice) => RadioListTile(
+              title: Text(choice),
+              value: choice,
+              groupValue: _controller.text,
+              onChanged: (String? value) {
+                setState(() {
+                  _controller.text = value!;
+                });
+              })),
+          ElevatedButton(
+            onPressed: () {
+              checkAnswer(_controller.text);
+              _controller.clear();
+            },
+            child: Text('Check Answer'),
+          ),
+          ElevatedButton(
+              onPressed: _fetchNewQuestion, child: Text('Next Question')),
+        ],
+      ),
     );
   }
 
-
   void _fetchNewQuestion() async {
-  try {
-    List<Map<String, dynamic>> triviaQuestions = await fetchTriviaQuestions(1, widget.category);
-    Map<String, dynamic> firstQuestion = triviaQuestions.first;
+    try {
+      List<Map<String, dynamic>> triviaQuestions =
+          await fetchTriviaQuestions(1, widget.category);
+      Map<String, dynamic> firstQuestion = triviaQuestions.first;
 
-    setState(() {
-      question = firstQuestion['question'];
-      currentTrivia['question'] = firstQuestion['question'];
-      currentTrivia['answer'] = firstQuestion['correct_answer'];
-    });
-  } catch (e) {
-    print("Error fetching trivia questions: $e");
+      setState(() {
+        question = firstQuestion['question'];
+        currentTrivia['question'] = firstQuestion['question'];
+        currentTrivia['answer'] = firstQuestion['correct_answer'];
+        multipleChoiceOptions = List<String>.from(firstQuestion['incorrect_answers']);
+        multipleChoiceOptions.add(firstQuestion['correct_answer']);
+        multipleChoiceOptions.shuffle();
+      });
+    } catch (e) {
+      print("Error fetching trivia questions: $e");
+    }
   }
-}
-
 
   void checkAnswer(String userAnswer) {
-    // Assuming 'currentTrivia' is populated with the current question and answer
-    final correctAnswer = currentTrivia['answer']; //get this from Firestore document
-
+    final correctAnswer = currentTrivia['answer'];
+    final gameState = Provider.of<GameState>(context, listen: false);
     String message;
 
     if (userAnswer == "" || userAnswer.trim().isEmpty) {
       message = "You didn't enter an answer!";
     } else {
-      final isCorrect = (userAnswer.toLowerCase() == correctAnswer!.toLowerCase());
+      bool isCorrect = false;
 
-      if (isCorrect) {
-        Provider.of<TriviaModel>(context, listen: false).incrementScore();
+      //check for basic string match
+      if (correctAnswer!.toLowerCase() == userAnswer.toLowerCase().trim()) {
+        isCorrect = true;
+      }
+
+      //check substring match
+      if (correctAnswer
+              .toLowerCase()
+              .contains(userAnswer.toLowerCase().trim()) ||
+          userAnswer
+              .toLowerCase()
+              .trim()
+              .contains(correctAnswer.toLowerCase())) {
+        isCorrect = true;
+      }
+
+      //check date match
+      if (DateTime.tryParse(correctAnswer) != null &&
+          DateTime.tryParse(userAnswer) != null) {
+        DateTime correctDate = DateTime.parse(correctAnswer);
+        DateTime userDate = DateTime.parse(userAnswer);
+
+        if (correctDate == userDate) {
+          isCorrect = true;
+        }
+      }
+
+      if (isCorrect == true) {
+        gameState.updateScore();
         message = 'Correct!';
       } else {
         message = 'Wrong answer. The correct answer is $correctAnswer.';
       }
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: Duration(seconds: 2),
+          ),
+        )
+        .closed
+        .then((reason) {
+      _fetchNewQuestion();
+      Provider.of<GameState>(context, listen: false).nextPlayer();
+    });
+  }
+}
+
+class GameState extends ChangeNotifier {
+  int currentPlayer = 0;
+  List<int> playerScores = [];
+
+  //constructor
+  GameState(int numPlayers) {
+    playerScores = List.filled(numPlayers, 0);
+  }
+
+  void updateScore() {
+    playerScores[currentPlayer]++;
+    notifyListeners();
+  }
+
+  void nextPlayer() {
+    currentPlayer = (currentPlayer + 1) % playerScores.length;
+    notifyListeners();
   }
 }

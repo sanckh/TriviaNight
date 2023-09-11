@@ -28,8 +28,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.amber,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade300)
       ),
       initialRoute: '/login',
       routes: routes,

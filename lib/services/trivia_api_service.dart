@@ -10,11 +10,18 @@ Future<List<Map<String, dynamic>>> fetchTriviaQuestions(int amount, int category
   if (response.statusCode == 200) {
     final Map<String, dynamic> data = jsonDecode(response.body);
     final List<Map<String, dynamic>> results = List<Map<String, dynamic>>.from(data['results']);
-
+    print(results);
     //decode html entities
     for (var question in results) {
       question['question'] = unescape.convert(question['question']);
     }
+    for(var answer in results){
+      answer['correct_answer'] = unescape.convert(answer['correct_answer']);
+    }
+    for(var incorrect in results){
+      incorrect['incorrect_answers'] = unescape.convert(incorrect['incorrect_answers']);
+    }
+
     return results;
 
   } else {
