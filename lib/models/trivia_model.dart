@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:html_unescape/html_unescape.dart';
+
 
 class TriviaModel with ChangeNotifier {
   String _question;

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:trivia_night/utils/game_configuration.dart';
 import 'package:trivia_night/views/game_screen.dart';
 
 class CategoryCard extends StatelessWidget {
   final String title;
   final int id;
-  CategoryCard({required this.title, required this.id});
+  final GameConfiguration gameConfiguration;
+
+  //Constructor
+  CategoryCard({
+    required this.title,
+     required this.id,
+     required this.gameConfiguration
+     });
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +25,7 @@ class CategoryCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => GameScreen(
                 category: id,
+                gameConfiguration: gameConfiguration,
               )
             )
           );

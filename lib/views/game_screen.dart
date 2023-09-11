@@ -3,14 +3,23 @@ import 'package:trivia_night/models/trivia_model.dart';
 import 'package:trivia_night/widgets/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:trivia_night/services/trivia_api_service.dart';
+import 'package:trivia_night/utils/game_configuration.dart';
 
 class GameScreen extends StatefulWidget {
   final int category;
-  GameScreen({required this.category});
+  final GameConfiguration gameConfiguration;
+
+  GameScreen({
+    required this.category,
+    required this.gameConfiguration,
+    });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
+  
 }
+
+
 
 class _GameScreenState extends State<GameScreen> {
   String? question;
@@ -20,6 +29,13 @@ class _GameScreenState extends State<GameScreen> {
   final TextEditingController _controller = TextEditingController();
   // For animations
   Key _key = UniqueKey();
+
+  @override
+  void initState() {
+    super.initState();
+    print("Number of Players: ${widget.gameConfiguration.numPlayers}");
+    print("Winning points: ${widget.gameConfiguration.winningPoints}");
+  }
 
   @override
   Widget build(BuildContext context) {
