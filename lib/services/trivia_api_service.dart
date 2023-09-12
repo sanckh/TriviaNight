@@ -1,47 +1,30 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:html_unescape/html_unescape.dart';
+import 'package:trivia_night/models/categories.dart';
+import 'package:trivia_night/models/question.dart';
 
-Future<List<Map<String, dynamic>>> fetchTriviaQuestions(int amount, int category) async {
-  final String url = 'https://opentdb.com/api.php?amount=$amount&category=$category&type=multiple';
-  final http.Response response = await http.get(Uri.parse(url));
-  var unescape = HtmlUnescape();
+const String baseUrl = 'https://opentdb.com/api.php';
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = jsonDecode(response.body);
-    final List<Map<String, dynamic>> results = List<Map<String, dynamic>>.from(data['results']);
-    print(results);
-    //decode html entities
-    for (var question in results) {
-      question['question'] = unescape.convert(question['question']);
-    }
-    for(var answer in results){
-      answer['correct_answer'] = unescape.convert(answer['correct_answer']);
-    }
-    for(var incorrect in results){
-      incorrect['incorrect_answers'] = unescape.convert(incorrect['incorrect_answers']);
-    }
-
-    return results;
-
-  } else {
-    throw Exception('Failed to load trivia questions');
+Future<List<Question>> getQuestions(Category category, int? total, String? difficulty) async {
+  http.Response? res; // Declare it here
+  String url = "$baseUrl?amount=$total&category=${category.id}";
+  
+  if(difficulty != null) {
+    url = "$url&difficulty=$difficulty";
   }
-}
 
-Future<List<Map<String, dynamic>>> fetchCategories() async {
-  const String url = 'https://opentdb.com/api_category.php';
-  final http.Response response = await http.get(Uri.parse(url));
+  try {
+    res = await http.get(Uri.parse(url)); // Assign the value here
+  } catch (e, stackTrace) {
+    print('Caught an error or exception: $e \n $stackTrace');
+    return []; // Returning an empty list or you could throw an exception
+  }
 
-  if(response.statusCode == 200) {
-    final Map<String, dynamic> apiResponse = json.decode(response.body);
-
-    //Extract the categories
-    final List<dynamic> categories = apiResponse['trivia_categories'];
-
-
-    return List<Map<String, dynamic>>.from(categories);
-  } else{
-    throw Exception('Failed to load categories');
+  if (res != null && res.statusCode == 200) {
+    List<Map<String, dynamic>> questions = List<Map<String, dynamic>>.from(json.decode(res.body)["results"]);
+    return Question.fromData(questions);
+  } else {
+    print('Failed to load questions. HTTP Status Code: ${res?.statusCode}');
+    return []; // Returning an empty list or you could throw an exception
   }
 }

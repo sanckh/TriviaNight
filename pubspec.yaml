@@ -15,6 +15,9 @@ dependencies:
   http: ^0.13.5
   html: ^0.15.0
   html_unescape: ^2.0.0
+  font_awesome_flutter: ^10.5.0
+  flutter_custom_clippers: ^2.1.0
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

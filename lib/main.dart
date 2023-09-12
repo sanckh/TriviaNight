@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'package:trivia_night/models/trivia_model.dart';
+import 'package:trivia_night/views/login_screen.dart';
+import 'package:trivia_night/views/home_screen.dart';
 import 'firebase_options.dart';
-import 'views/routes.dart';
+
 
 
 void main() async {
@@ -12,12 +12,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => TriviaModel("Initial Answer", "Initial Question"),
-      child: const MainApp(),
-    ),
-  );
+  runApp(MainApp());
 }
 
 
@@ -31,13 +26,8 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade300)
       ),
-      initialRoute: '/login',
-      routes: routes,
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
+      //home: LoginScreen(),
+      home: HomePage(),
+        );
   }
 }
