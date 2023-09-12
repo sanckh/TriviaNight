@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:trivia_night/views/login_screen.dart';
-import 'package:trivia_night/views/home_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -27,7 +26,7 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade300)
       ),
       //home: LoginScreen(),
-      home: HomePage(),
+      home: LoginScreen(),
         );
   }
 }
