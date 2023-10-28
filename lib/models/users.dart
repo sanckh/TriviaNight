@@ -37,8 +37,7 @@ class User {
       id: doc.id,
       username: data['username'],
       email: data['email'],
-      avatar: data['avatar'] ??
-          'defaultAvatarURL', // default avatar URL if avatar is null
+      avatar: data['avatar'] ?? 'defaultAvatarURL', //make sure to create this
       gamesPlayed: data['games_played'] ?? 0,
       correctAnswers: data['correct_answers'] ?? 0,
       categoriesPlayed: List<String>.from(data['categories_played'] ?? []),

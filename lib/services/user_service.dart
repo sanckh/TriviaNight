@@ -16,17 +16,4 @@ class UserService {
     }
     return null;
   }
-
-  Map<String, dynamic> toJson() {
-  return {
-    'username': username,
-    'email': email,
-    'nickname': nickname,
-    'avatar': avatar,
-    'games_played': gamesPlayed,
-    'correct_answers': correctAnswers,
-    'categories_played': categoriesPlayed,
-  };
-}
-
 }
