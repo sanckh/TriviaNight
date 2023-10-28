@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:trivia_night/views/register_screen.dart';
+import 'package:trivia_night/views/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,12 +10,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String _email = '', _password = '';
-
 
   checkAuthentication() async {
     _auth.authStateChanges().listen((user) async {
@@ -30,17 +29,22 @@ class _LoginScreenState extends State<LoginScreen> {
     this.checkAuthentication();
   }
 
-  login() async{
-    if(_formKey.currentState!.validate()){
+  login() async {
+    if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
 
       try {
         UserCredential user = await _auth.signInWithEmailAndPassword(
             email: _email, password: _password);
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ));
       } catch (e) {
         showError(e.toString());
       }
-
     }
   }
 
@@ -62,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -89,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                       validator: (input) {
                         if (input!.length < 6)
-                          return 'Provide Minimum 6 Character';
+                          return 'Provide Minimum 6 Characters';
                         return null;
                       },
                       decoration: InputDecoration(
@@ -102,6 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: login,
                     child: Text('Login'),
                   ),
+                  SizedBox(height: 20),
+                  Text('Don\'t have an account?'),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()));
+                      },
+                      child: Text('Register'))
                 ],
               ),
             ),

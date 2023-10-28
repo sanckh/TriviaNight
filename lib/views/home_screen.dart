@@ -4,7 +4,7 @@ import 'package:trivia_night/models/categories.dart';
 import 'package:trivia_night/widgets/quiz_options.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class HomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   final List<Color> tileColors = [
     Colors.green,
     Colors.blue,
@@ -55,10 +55,12 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   sliver: SliverGrid(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: MediaQuery.of(context).size.width >
-                                  1000
-                              ? 7
-                              : MediaQuery.of(context).size.width > 600 ? 5 : 3,
+                          crossAxisCount:
+                              MediaQuery.of(context).size.width > 1000
+                                  ? 7
+                                  : MediaQuery.of(context).size.width > 600
+                                      ? 5
+                                      : 3,
                           childAspectRatio: 1.2,
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0),
