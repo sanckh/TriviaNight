@@ -74,58 +74,61 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FlutterLogo(size: 100),
-            SizedBox(height: 20),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                      validator: (input) {
-                        if (input!.isEmpty) return 'Enter Email';
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                      ),
-                      onSaved: (input) => _email = input!),
-                  SizedBox(height: 20),
-                  TextFormField(
-                      validator: (input) {
-                        if (input!.length < 6) {
-                          return 'Provide Minimum 6 Characters';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                      ),
-                      obscureText: true,
-                      onSaved: (input) => _password = input!),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: login,
-                    child: Text('Login'),
-                  ),
-                  SizedBox(height: 20),
-                  Text('Don\'t have an account?'),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => RegisterScreen()));
-                      },
-                      child: Text('Register'))
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlutterLogo(size: 100),
+              SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                        validator: (input) {
+                          if (input!.isEmpty) return 'Enter Email';
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                        ),
+                        onSaved: (input) => _email = input!),
+                    SizedBox(height: 20),
+                    TextFormField(
+                        validator: (input) {
+                          if (input!.length < 6) {
+                            return 'Provide Minimum 6 Characters';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        onSaved: (input) => _password = input!),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: login,
+                      child: Text('Login'),
+                    ),
+                    SizedBox(height: 20),
+                    Text('Don\'t have an account?'),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegisterScreen()));
+                        },
+                        child: Text('Register'))
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

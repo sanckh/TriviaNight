@@ -14,6 +14,7 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   final UserService _userService = UserService();
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = auth.FirebaseAuth.instance.currentUser;
@@ -32,7 +33,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             SettingsScreen(),
           ];
           return Scaffold(
-            body: _screens[_currentIndex],
+            body: IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: _currentIndex,
               onTap: (index) {
