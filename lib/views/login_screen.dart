@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trivia_night/views/register_screen.dart';
 import 'package:trivia_night/views/home_screen.dart';
+import 'package:trivia_night/widgets/main_navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,7 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   checkAuthentication() async {
     _auth.authStateChanges().listen((user) async {
       if (user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainNavigationScreen(),
+          ),
+        );
       }
     });
   }
@@ -40,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => MainNavigationScreen(),
             ));
       } catch (e) {
         showError(e.toString());
@@ -92,8 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20),
                   TextFormField(
                       validator: (input) {
-                        if (input!.length < 6)
+                        if (input!.length < 6) {
                           return 'Provide Minimum 6 Characters';
+                        }
                         return null;
                       },
                       decoration: InputDecoration(
