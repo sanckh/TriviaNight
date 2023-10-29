@@ -96,28 +96,35 @@ class _QuizFinishedPageState extends State<QuizFinishedPage> {
                 children: <Widget>[
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 20.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 20.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .secondary
+                          .withOpacity(0.8),
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                    child: Text(
+                      "Go To Home",
+                      style: TextStyle(color: Colors.white),
                     ),
-                    child: Text("Goto Home"),
                     onPressed: () => Navigator.pop(context),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 20.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 20.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      "Check Answers",
+                      style: TextStyle(color: Colors.white),
                     ),
-                    child: Text("Check Answers"),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => CheckAnswersPage(
