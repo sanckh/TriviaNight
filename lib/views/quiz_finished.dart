@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:trivia_night/models/question.dart';
+import 'package:trivia_night/models/users.dart';
+import 'package:trivia_night/services/user_service.dart';
 import 'package:trivia_night/views/check_answers.dart';
 
 class QuizFinishedPage extends StatefulWidget {
@@ -15,8 +18,28 @@ class QuizFinishedPage extends StatefulWidget {
 
 class _QuizFinishedPageState extends State<QuizFinishedPage> {
   int? correctAnswers;
+  final UserService _userService = UserService();
 
   @override
+  void initState() {
+    super.initState();
+    _updateUserData();
+  }
+
+  _updateUserData() async {
+    final firebaseUser = auth.FirebaseAuth.instance.currentUser;
+    User? currentUser = firebaseUser?.uid != null
+        ? await _userService.getUserProfile(firebaseUser!.uid)
+        : null;
+    String userId = currentUser!.id;
+    int correct = 0;
+    widget.answers.forEach((index, value) {
+      if (widget.questions[index].correctAnswer == value) correct++;
+    });
+    await _userService.updateUserGameData(
+        userId, correct, widget.questions.length);
+  }
+
   Widget build(BuildContext context) {
     int correct = 0;
     this.widget.answers.forEach((index, value) {

@@ -81,7 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FlutterLogo(size: 100),
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: ClipOval(
+                  child: Image.asset('assets/triviaplaceholdericon.png',
+                      width: 200, height: 200, fit: BoxFit.cover),
+                ),
+              ),
               SizedBox(height: 20),
               Form(
                 key: _formKey,

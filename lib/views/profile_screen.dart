@@ -49,7 +49,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage(_user.avatar),
+                        backgroundImage: _user.avatar.startsWith('http')
+                            ? NetworkImage(_user.avatar)
+                                as ImageProvider<Object>
+                            : AssetImage(_user.avatar) as ImageProvider<Object>,
                         radius: 60,
                       ),
                       SizedBox(height: 15),
@@ -80,14 +83,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Divider(),
                         ListTile(
                           leading: Icon(Icons.check_circle_outline),
-                          title: Text('Correct Answers'),
-                          trailing: Text('${_user.correctAnswers}'),
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(Icons.category),
-                          title: Text('Categories Played'),
-                          trailing: Text('${_user.categoriesPlayed.length}'),
+                          title: Text('Average Score'),
+                          trailing: Text('${_user.averageScore}%'),
                         ),
                       ],
                     ),

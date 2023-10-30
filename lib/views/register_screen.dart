@@ -35,6 +35,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             .set({
           'username': _userName,
           'email': _email,
+          'avatar': 'assets/triviaplaceholdericon.png',
+          'games_played': 0,
+          'correct_answers': 0,
+          'categories_played': [],
+          'average_score': 0,
         });
 
         // Show a success dialog

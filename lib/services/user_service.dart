@@ -16,4 +16,27 @@ class UserService {
     }
     return null;
   }
+
+  Future<void> updateUserGameData(String userId,
+      int correctAnswersFromCurrentGame, int totalQuestions) async {
+    DocumentReference userRef = _usersRef.doc(userId);
+
+    //Fetch current user data
+    DocumentSnapshot userDoc = await userRef.get();
+    Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+
+    //Update user data
+    int gamesPlayed = userData['games_played'] + 1;
+    int totalCorrectAnswers =
+        userData['correct_answers'] + correctAnswersFromCurrentGame;
+    double averageScore =
+        (totalCorrectAnswers / (gamesPlayed * totalQuestions)) * 100;
+
+    //Save updated user data
+    await userRef.update({
+      'games_played': gamesPlayed,
+      'correct_answers': totalCorrectAnswers,
+      'average_score': averageScore,
+    });
+  }
 }
