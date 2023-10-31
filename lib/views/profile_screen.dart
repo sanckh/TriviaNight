@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trivia_night/models/users.dart';
 import 'package:trivia_night/services/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:trivia_night/views/edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -94,7 +95,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Navigate to edit profile screen
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfileScreen(
+                                user: _user,
+                              )));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue.shade400,
