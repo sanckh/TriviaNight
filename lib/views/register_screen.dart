@@ -16,6 +16,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _userName = '';
   String _passwordConfirmation = '';
   String? _passwordFieldValue = '';
+  bool _isObscured = true; // Password visibility control
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
 
   void _registerUser() async {
     if (_formKey.currentState!.validate()) {
@@ -75,69 +82,108 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: Text('Register Page'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(labelText: 'User Name'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your User Name';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _userName = value!,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // Additional email validation checks can be added if needed
-                  return null;
-                },
-                onSaved: (value) => _email = value!,
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Password'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  _passwordFieldValue = value;
-                  return null;
-                },
-                onSaved: (value) => _password = value!,
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Confirm Password'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  if (value != _passwordFieldValue) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _passwordConfirmation = value!,
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: _registerUser,
-                child: Text('Register'),
-              ),
-            ],
+        padding: const EdgeInsets.all(20.0),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: 'User Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your User Name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _userName = value!,
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    // Additional email validation checks can be added if needed
+                    return null;
+                  },
+                  onSaved: (value) => _email = value!,
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  obscureText: _isObscured,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a password';
+                    }
+                    _passwordFieldValue = value;
+                    return null;
+                  },
+                  onSaved: (value) => _password = value!,
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  obscureText: _isObscured,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != _passwordFieldValue) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _passwordConfirmation = value!,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _registerUser,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.blueAccent),
+                    padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                  ),
+                  child: Text(
+                    'Register',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
