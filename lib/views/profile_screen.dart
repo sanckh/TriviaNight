@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         backgroundImage: _user.avatar.startsWith('http')
                             ? NetworkImage(_user.avatar)
                                 as ImageProvider<Object>
-                            : AssetImage(_user.avatar) as ImageProvider<Object>,
+                            : AssetImage(_user.avatar),
                         radius: 60,
                       ),
                       SizedBox(height: 15),

@@ -14,55 +14,69 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   final UserService _userService = UserService();
+  User? _user;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  _fetchUserData() async {
+    final firebaseUser = auth.FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      User? user = await _userService.getUserProfile(firebaseUser.uid);
+      setState(() {
+        _user = user;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = auth.FirebaseAuth.instance.currentUser;
+    if (_isLoading) {
+      return CircularProgressIndicator();
+    }
 
-    return FutureBuilder<User?>(
-      future: firebaseUser != null
-          ? _userService.getUserProfile(firebaseUser.uid)
-          : null,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          User user = snapshot.data!;
-          final List<Widget> _screens = [
-            HomeScreen(),
-            ProfileScreen(user: user),
-            SettingsScreen(),
-          ];
-          return Scaffold(
-            body: IndexedStack(
-              index: _currentIndex,
-              children: _screens,
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
-                ),
-              ],
-            ),
-          );
-        }
-        return CircularProgressIndicator(); // Show a loading indicator while fetching user data
-      },
+    final List<Widget> _screens = [
+      HomeScreen(),
+      ProfileScreen(user: _user!),
+      SettingsScreen(),
+    ];
+
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
     );
   }
 }
