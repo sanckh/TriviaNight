@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trivia_night/models/users.dart';
 
+//Screens/Widgets
+import 'package:trivia_night/widgets/update_password.dart';
+
 class EditProfileScreen extends StatefulWidget {
   final User user;
 
@@ -31,7 +34,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Your edit profile fields and widgets go here
+              ElevatedButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UpdatePasswordScreen()),
+    );
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.blue.shade400,
+    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+    textStyle: TextStyle(
+      fontSize: 18,
+    ),
+  ),
+  child: Text('Update Password'),
+),
+
             ],
           ),
         ),
