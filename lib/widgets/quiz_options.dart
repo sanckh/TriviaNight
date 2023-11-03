@@ -30,124 +30,68 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    //Determine whether we are light or dark mode:
+    var brightness = Theme.of(context).brightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    Color activeColor = isDarkMode
+        ? Theme.of(context).colorScheme.secondary
+        : Theme.of(context).colorScheme.primary;
+    Color inactiveColor = isDarkMode
+        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.3)
+        : Theme.of(context).colorScheme.onSurface;
+
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            color: Colors.grey.shade200,
+            color: Theme.of(context).colorScheme.surface,
             child: Text(
               widget.category!.name,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           SizedBox(height: 10.0),
           Text("Select Total Number of Questions"),
           SizedBox(
             width: double.infinity,
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              runSpacing: 16.0,
-              spacing: 16.0,
-              children: <Widget>[
-                SizedBox(width: 0.0),
-                ActionChip(
-                  label: Text("10"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == 10
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(10),
-                ),
-                ActionChip(
-                  label: Text("20"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == 20
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(20),
-                ),
-                ActionChip(
-                  label: Text("30"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == 30
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(30),
-                ),
-                ActionChip(
-                  label: Text("40"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == 40
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(40),
-                ),
-                ActionChip(
-                  label: Text("50"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == 50
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(50),
-                ),
-              ],
+            child: _buildChipSelection<int>(
+              value: _noOfQuestions!,
+              values: [10, 20, 30, 40, 50],
+              activeColor: activeColor,
+              inactiveColor: inactiveColor,
+              onSelected: _selectNumberOfQuestions,
             ),
           ),
           SizedBox(height: 20.0),
           Text("Select Difficulty"),
           SizedBox(
             width: double.infinity,
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              runSpacing: 16.0,
-              spacing: 16.0,
-              children: <Widget>[
-                SizedBox(width: 0.0),
-                ActionChip(
-                  label: Text("Any"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _difficulty == null
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectDifficulty(null),
-                ),
-                ActionChip(
-                  label: Text("Easy"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _difficulty == "easy"
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectDifficulty("easy"),
-                ),
-                ActionChip(
-                  label: Text("Medium"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _difficulty == "medium"
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectDifficulty("medium"),
-                ),
-                ActionChip(
-                  label: Text("Hard"),
-                  labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _difficulty == "hard"
-                      ? Colors.indigo
-                      : Colors.grey.shade600,
-                  onPressed: () => _selectDifficulty("hard"),
-                ),
-              ],
+            child: _buildChipSelection<String?>(
+              value: _difficulty,
+              values: [null, "easy", "medium", "hard"],
+              activeColor: activeColor,
+              inactiveColor: inactiveColor,
+              onSelected: _selectDifficulty,
             ),
           ),
           SizedBox(height: 20.0),
           processing
               ? CircularProgressIndicator()
               : ElevatedButton(
-                  child: Text("Start Quiz"),
                   onPressed: _startQuiz,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(activeColor),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  child: Text(
+                    "Start Quiz",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
           SizedBox(height: 20.0),
         ],
@@ -155,13 +99,36 @@ class _QuizOptionsDialogState extends State<QuizOptionsDialog> {
     );
   }
 
-  _selectNumberOfQuestions(int i) {
+  Widget _buildChipSelection<T>({
+    required T value,
+    required List<T> values,
+    required Color activeColor,
+    required Color inactiveColor,
+    required void Function(T) onSelected,
+  }) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      runSpacing: 16.0,
+      spacing: 16.0,
+      children: values
+          .map((e) => ActionChip(
+                label: Text(e.toString()),
+                labelStyle: TextStyle(color: Colors.white),
+                backgroundColor: e == value ? activeColor : inactiveColor,
+                onPressed: () => onSelected(e),
+              ))
+          .toList(),
+    );
+  }
+
+  void _selectNumberOfQuestions(int i) {
     setState(() {
       _noOfQuestions = i;
     });
   }
 
-  _selectDifficulty(String? s) {
+  void _selectDifficulty(String? s) {
     setState(() {
       _difficulty = s;
     });

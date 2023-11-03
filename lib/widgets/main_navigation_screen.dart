@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trivia_night/views/home_screen.dart';
 import 'package:trivia_night/views/profile_screen.dart';
 import 'package:trivia_night/views/settings_screen.dart';
@@ -20,23 +21,41 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
+    _loadIndex();
     _fetchUserData();
   }
 
-  _fetchUserData() async {
-    final firebaseUser = auth.FirebaseAuth.instance.currentUser;
-    if (firebaseUser != null) {
-      User? user = await _userService.getUserProfile(firebaseUser.uid);
+  void _loadIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currentIndex = prefs.getInt('currentIndex') ?? 0;
+    });
+  }
+
+  void _saveIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('currentIndex', _currentIndex);
+  }
+
+ _fetchUserData() async {
+  final firebaseUser = auth.FirebaseAuth.instance.currentUser;
+  if (firebaseUser != null) {
+    User? user = await _userService.getUserProfile(firebaseUser.uid);
+    if (mounted) {
       setState(() {
         _user = user;
         _isLoading = false;
       });
-    } else {
+    }
+  } else {
+    if (mounted) {
       setState(() {
         _isLoading = false;
       });
     }
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

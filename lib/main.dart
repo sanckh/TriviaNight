@@ -45,7 +45,8 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    return MaterialApp(
+    return 
+    MaterialApp(
       theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade300)),
@@ -57,7 +58,7 @@ class _MainAppState extends State<MainApp> {
           brightness: Brightness.dark,
           ),
       ),
-      themeMode: themeProvider.themeMode, //This will use the system theme
+      themeMode: themeProvider.themeMode,
       home: StreamBuilder<auth.User?>(
         stream: auth.FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
