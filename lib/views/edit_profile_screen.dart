@@ -30,27 +30,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          //Testing github
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UpdatePasswordScreen()),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue.shade400,
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-    textStyle: TextStyle(
-      fontSize: 18,
-    ),
-  ),
-  child: Text('Update Password'),
-),
-
+              
             ],
           ),
         ),
