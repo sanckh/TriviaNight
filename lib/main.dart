@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:trivia_night/widgets/main_navigation_screen.dart';
+import 'package:trivia_night/widgets/theme_provider.dart';
 import 'firebase_options.dart';
 
 //Screens
@@ -22,7 +24,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider()..loadThemePreference(),
+      child: MainApp(),
+    )
+  );
 }
 
 class MainApp extends StatefulWidget {
@@ -37,10 +44,20 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade300)),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue.shade300,
+          brightness: Brightness.dark,
+          ),
+      ),
+      themeMode: themeProvider.themeMode, //This will use the system theme
       home: StreamBuilder<auth.User?>(
         stream: auth.FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
