@@ -29,31 +29,23 @@ class HomeScreen extends StatelessWidget {
           ClipPath(
             clipper: WaveClipperTwo(),
             child: Container(
-              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).colorScheme.primary),
               height: 200,
             ),
           ),
           CustomScrollView(
             physics: BouncingScrollPhysics(),
             slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    "Select a category to start the quiz",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
               SliverPadding(
                 padding: const EdgeInsets.all(16.0),
                 sliver: SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: MediaQuery.of(context).size.width > 1000 ? 7 : MediaQuery.of(context).size.width > 600 ? 5 : 3,
+                    crossAxisCount: MediaQuery.of(context).size.width > 1000
+                        ? 7
+                        : MediaQuery.of(context).size.width > 600
+                            ? 5
+                            : 3,
                     childAspectRatio: 1.2,
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
@@ -86,13 +78,15 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (category.icon != null) Icon(category.icon, size: 24.0), // Consistent icon size
+            if (category.icon != null)
+              Icon(category.icon, size: 24.0), // Consistent icon size
             if (category.icon != null) SizedBox(height: 5.0),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: AutoSizeText(
                 category.name,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 minFontSize: 10.0,
                 textAlign: TextAlign.center,
                 maxLines: 3,

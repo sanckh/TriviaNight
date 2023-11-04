@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:trivia_night/providers/user_provider.dart';
 import 'package:trivia_night/widgets/main_navigation_screen.dart';
 import 'package:trivia_night/widgets/theme_provider.dart';
 import 'firebase_options.dart';
@@ -24,8 +25,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => ThemeProvider()..loadThemePreference(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+          create: (_) => ThemeProvider()..loadThemePreference()),
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+    ],
     child: MainApp(),
   ));
 }
@@ -47,27 +52,25 @@ class _MainAppState extends State<MainApp> {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors
-              .indigo.shade400, // A more vibrant color for the trivia theme
+          seedColor: Colors.indigo.shade400,
           brightness: Brightness.light,
-          primary: Colors.indigo.shade600,
-          secondary: Colors
-              .amber.shade600, // Adding a complementary color for highlights
+          primary: Colors.indigo.shade400,
+          onPrimary: Colors.black,
+          secondary: Colors.amber.shade600,
           error: Colors.red.shade400,
         ),
-        fontFamily: 'Roboto', // Choose a readable font for body text
+        fontFamily: 'Roboto',
         textTheme: TextTheme(
           headlineMedium: TextStyle(
-              fontFamily: 'FredokaOne',
-              color: Colors.indigo.shade600), // Playful font for headlines
+              fontFamily: 'FredokaOne', color: Colors.indigo.shade600),
           bodyMedium: TextStyle(fontSize: 14.0),
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.indigo.shade600,
+          backgroundColor: Colors.indigo.shade400,
           foregroundColor: Colors.white,
         ),
         buttonTheme: ButtonThemeData(
-          buttonColor: Colors.amber.shade600, // Buttons should stand out
+          buttonColor: Colors.amber.shade400,
           textTheme: ButtonTextTheme.primary,
         ),
       ),
@@ -80,6 +83,7 @@ class _MainAppState extends State<MainApp> {
           primary: Colors.indigo.shade700,
           secondary: Colors.amber.shade700,
           error: Colors.red.shade600,
+          onPrimary: Colors.white,
         ),
         fontFamily: 'Roboto',
         textTheme: TextTheme(

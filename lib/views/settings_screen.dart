@@ -35,69 +35,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _buildSettingsSection({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+    Color? color,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: color ?? Colors.blue),
+      title: Text(title),
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text('Settings')),
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: _signOut,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+      appBar: AppBar(
+        title: Text('Settings'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: _signOut,
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child:
+                Text('Account', style: Theme.of(context).textTheme.headline6),
+          ),
+          _buildSettingsSection(
+            title: 'Update Username',
+            icon: Icons.person,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateUsernameScreen(
+                    onUpdateUsername: _updateUserUsername,
                   ),
-                  child: Text('Sign Out'),
                 ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UpdatePasswordScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade400,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  child: Text('Update Password'),
+              );
+            },
+          ),
+          _buildSettingsSection(
+            title: 'Update Password',
+            icon: Icons.lock,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdatePasswordScreen(),
                 ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UpdateUsernameScreen(
-                                onUpdateUsername: _updateUserUsername,
-                              )),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade400,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  child: Text('Update Username'),
-                ),
-                SwitchListTile(
-                    title: Text('Dark Theme'),
-                    value: themeProvider.themeMode == ThemeMode.dark,
-                    onChanged: (bool value) {
-                      themeProvider.toggleTheme(value);
-                    })
-              ],
-            )),
+              );
+            },
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Preferences',
+                style: Theme.of(context).textTheme.titleLarge),
+          ),
+          SwitchListTile(
+            title: Text('Dark Theme'),
+            secondary: Icon(Icons.dark_mode),
+            value: themeProvider.themeMode == ThemeMode.dark,
+            onChanged: (bool value) {
+              themeProvider.toggleTheme(value);
+            },
+          ),
+          // ... Add more settings sections here
+        ],
       ),
     );
   }

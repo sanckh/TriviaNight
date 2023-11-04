@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:trivia_night/providers/user_provider.dart';
 
 class UpdateUsernameScreen extends StatefulWidget {
   final Function(String) onUpdateUsername;
@@ -78,7 +80,8 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen> {
             .doc(user.uid)
             .update({'username': newUsername});
 
-        widget.onUpdateUsername(newUsername);
+        Provider.of<UserProvider>(context, listen: false)
+            .updateUsername(newUsername);
 
         Navigator.pop(context);
       } else {

@@ -1,26 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trivia_night/models/users.dart';
+import 'package:trivia_night/providers/user_provider.dart';
 import 'package:trivia_night/views/edit_profile_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
-  final User user;
-
-  ProfileScreen({required this.user});
-
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  late User _user;
-
-  @override
-  void initState() {
-    super.initState();
-    _user = widget.user;
-  }
-
-  Widget _buildProfileHeader(BuildContext context) {
+class ProfileScreen extends StatelessWidget {
+  Widget _buildProfileHeader(BuildContext context, User user) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(20),
@@ -33,17 +18,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             CircleAvatar(
-              backgroundImage: _user.avatar.startsWith('http')
-                  ? NetworkImage(_user.avatar) as ImageProvider<Object>
-                  : AssetImage(_user.avatar),
+              backgroundImage: user.avatar.startsWith('http')
+                  ? NetworkImage(user.avatar) as ImageProvider<Object>
+                  : AssetImage(user.avatar),
               radius: 60,
             ),
             SizedBox(height: 15),
             Text(
-              _user.username,
-              style: Theme.of(context).textTheme.headline6?.copyWith(
+              user.username,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                  ), // Updated to use theme text style
+                  ),
             ),
           ],
         ),
@@ -62,22 +47,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileStats() {
+  Widget _buildProfileStats(User user) {
+    String convertTwoDecimalPlaces = user.averageScore.toStringAsFixed(2);
+
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
         children: [
-          _buildStatCard('Games Played', '${_user.gamesPlayed}', Icons.games),
+          _buildStatCard('Games Played', '${user.gamesPlayed}', Icons.games),
           Divider(),
-          _buildStatCard('Average Score', '${_user.averageScore}%',
+          _buildStatCard('Average Score', '$convertTwoDecimalPlaces%',
               Icons.check_circle_outline),
         ],
       ),
     );
   }
 
+  //signed in brought directly to settings, needs to go to home screen
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -93,22 +83,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(50)),
               ),
-              child: _buildProfileHeader(context),
+              child: _buildProfileHeader(context, user),
             ),
             Container(
               padding: EdgeInsets.all(20),
-              color: Theme.of(context)
-                  .scaffoldBackgroundColor, // Adapt to theme changes.
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 children: [
-                  _buildProfileStats(),
+                  _buildProfileStats(user),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditProfileScreen(user: _user),
+                          builder: (context) => EditProfileScreen(user: user),
                         ),
                       );
                     },
