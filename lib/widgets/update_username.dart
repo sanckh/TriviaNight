@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UpdateUsernameScreen extends StatefulWidget {
+  final Function(String) onUpdateUsername;
+
+  UpdateUsernameScreen({Key? key, required this.onUpdateUsername})
+      : super(key: key);
+
   @override
   _UpdateUsernameScreenState createState() => _UpdateUsernameScreenState();
 }
@@ -43,11 +49,13 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen> {
                     try {
                       await updateUsername(_newUsername);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Username updated successfully')),
+                        SnackBar(
+                            content: Text('Username updated successfully')),
                       );
                     } catch (error) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to update username: $error')),
+                        SnackBar(
+                            content: Text('Failed to update username: $error')),
                       );
                     }
                   }
@@ -65,7 +73,14 @@ class _UpdateUsernameScreenState extends State<UpdateUsernameScreen> {
     try {
       auth.User? user = auth.FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await user.updateDisplayName(newUsername);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'username': newUsername});
+
+        widget.onUpdateUsername(newUsername);
+
+        Navigator.pop(context);
       } else {
         throw Exception('User not found');
       }

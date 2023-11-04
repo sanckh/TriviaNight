@@ -24,12 +24,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider()..loadThemePreference(),
-      child: MainApp(),
-    )
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeProvider()..loadThemePreference(),
+    child: MainApp(),
+  ));
 }
 
 class MainApp extends StatefulWidget {
@@ -45,55 +43,59 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    return 
-    MaterialApp(
-  theme: ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.indigo.shade400, // A more vibrant color for the trivia theme
-      brightness: Brightness.light,
-      primary: Colors.indigo.shade600,
-      secondary: Colors.amber.shade600, // Adding a complementary color for highlights
-      error: Colors.red.shade400,
-    ),
-    fontFamily: 'Roboto', // Choose a readable font for body text
-    textTheme: TextTheme(
-      headlineMedium: TextStyle(fontFamily: 'FredokaOne', color: Colors.indigo.shade600), // Playful font for headlines
-      bodyMedium: TextStyle(fontSize: 14.0),
-    ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.indigo.shade600,
-      foregroundColor: Colors.white,
-    ),
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.amber.shade600, // Buttons should stand out
-      textTheme: ButtonTextTheme.primary,
-    ),
-  ),
-  darkTheme: ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.indigo.shade400,
-      brightness: Brightness.dark,
-      primary: Colors.indigo.shade700,
-      secondary: Colors.amber.shade700,
-      error: Colors.red.shade600,
-    ),
-    fontFamily: 'Roboto',
-    textTheme: TextTheme(
-      headlineMedium: TextStyle(fontFamily: 'FredokaOne', color: Colors.indigo.shade300),
-      bodyMedium: TextStyle(fontSize: 14.0),
-    ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.indigo.shade700,
-      foregroundColor: Colors.white,
-    ),
-    buttonTheme: ButtonThemeData(
-      buttonColor: Colors.amber.shade700,
-      textTheme: ButtonTextTheme.primary,
-    ),
-  ),
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors
+              .indigo.shade400, // A more vibrant color for the trivia theme
+          brightness: Brightness.light,
+          primary: Colors.indigo.shade600,
+          secondary: Colors
+              .amber.shade600, // Adding a complementary color for highlights
+          error: Colors.red.shade400,
+        ),
+        fontFamily: 'Roboto', // Choose a readable font for body text
+        textTheme: TextTheme(
+          headlineMedium: TextStyle(
+              fontFamily: 'FredokaOne',
+              color: Colors.indigo.shade600), // Playful font for headlines
+          bodyMedium: TextStyle(fontSize: 14.0),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.indigo.shade600,
+          foregroundColor: Colors.white,
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.amber.shade600, // Buttons should stand out
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.indigo.shade400,
+          brightness: Brightness.dark,
+          primary: Colors.indigo.shade700,
+          secondary: Colors.amber.shade700,
+          error: Colors.red.shade600,
+        ),
+        fontFamily: 'Roboto',
+        textTheme: TextTheme(
+          headlineMedium: TextStyle(
+              fontFamily: 'FredokaOne', color: Colors.indigo.shade300),
+          bodyMedium: TextStyle(fontSize: 14.0),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.indigo.shade700,
+          foregroundColor: Colors.white,
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.amber.shade700,
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
       themeMode: themeProvider.themeMode,
       home: StreamBuilder<auth.User?>(
         stream: auth.FirebaseAuth.instance.authStateChanges(),

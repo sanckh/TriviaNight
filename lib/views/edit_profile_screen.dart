@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:trivia_night/models/users.dart';
 
 //Screens/Widgets
-import 'package:trivia_night/widgets/update_password.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final User user;
@@ -32,9 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            children: [
-              
-            ],
+            children: [],
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:provider/provider.dart';
+import 'package:trivia_night/models/users.dart';
 import 'package:trivia_night/views/login_screen.dart';
 import 'package:trivia_night/widgets/theme_provider.dart';
 import 'package:trivia_night/widgets/update_password.dart';
@@ -12,6 +13,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late User _user;
+
+  void _updateUserUsername(String newUsername) {
+    setState(() {
+      _user.username = newUsername;
+    });
+  }
 
   void _signOut() async {
     try {
@@ -68,7 +76,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => UpdateUsernameScreen()),
+                          builder: (context) => UpdateUsernameScreen(
+                                onUpdateUsername: _updateUserUsername,
+                              )),
                     );
                   },
                   style: ElevatedButton.styleFrom(
