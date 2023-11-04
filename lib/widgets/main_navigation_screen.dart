@@ -13,7 +13,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+  late ValueNotifier<int> _currentIndexNotifier;
   final UserService _userService = UserService();
   User? _user;
   bool _isLoading = true;
@@ -21,20 +21,19 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
+    _currentIndexNotifier = ValueNotifier(0); // Initialize with default index
     _loadIndex();
     _fetchUserData();
   }
 
   void _loadIndex() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _currentIndex = prefs.getInt('currentIndex') ?? 0;
-    });
+    _currentIndexNotifier.value = prefs.getInt('currentIndex') ?? 0;
   }
 
-  void _saveIndex() async {
+  Future<void> _saveIndex(int newIndex) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('currentIndex', _currentIndex);
+    await prefs.setInt('currentIndex', newIndex);
   }
 
  _fetchUserData() async {
@@ -59,43 +58,50 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return CircularProgressIndicator();
-    }
+    return ValueListenableBuilder(
+      valueListenable: _currentIndexNotifier,
+      builder: (context, int currentIndex, _) {
+        final List<Widget> _screens = [
+          HomeScreen(),
+          ProfileScreen(user: _user!),
+          SettingsScreen(),
+        ];
 
-    final List<Widget> _screens = [
-      HomeScreen(),
-      ProfileScreen(user: _user!),
-      SettingsScreen(),
-    ];
-
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+        return Scaffold(
+          body: IndexedStack(
+            index: currentIndex,
+            children: _screens,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: (index) async {
+              await _saveIndex(index); // Wait for the index to be saved
+              _currentIndexNotifier.value = index; // Then update the ValueNotifier
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+
+  @override
+  void dispose() {
+    _currentIndexNotifier.dispose();
+    super.dispose();
   }
 }
