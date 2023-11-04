@@ -84,7 +84,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               onTap: (index) async {
                 await _saveIndex(index);
                 _currentIndexNotifier.value =
-                    index; // Then update the ValueNotifier
+                    index;
               },
               items: [
                 BottomNavigationBarItem(

@@ -56,7 +56,7 @@ class _MainAppState extends State<MainApp> {
           brightness: Brightness.light,
           primary: Colors.indigo.shade400,
           onPrimary: Colors.black,
-          secondary: Colors.amber.shade600,
+          secondary: Colors.indigo.shade100,
           error: Colors.red.shade400,
         ),
         fontFamily: 'Roboto',
@@ -69,9 +69,11 @@ class _MainAppState extends State<MainApp> {
           backgroundColor: Colors.indigo.shade400,
           foregroundColor: Colors.white,
         ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.amber.shade400,
-          textTheme: ButtonTextTheme.primary,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.indigo.shade400),
+            foregroundColor: MaterialStateProperty.all(Colors.black),
+          ),
         ),
       ),
       darkTheme: ThemeData(
@@ -81,7 +83,7 @@ class _MainAppState extends State<MainApp> {
           seedColor: Colors.indigo.shade400,
           brightness: Brightness.dark,
           primary: Colors.indigo.shade700,
-          secondary: Colors.amber.shade700,
+          secondary: Colors.indigo.shade200,
           error: Colors.red.shade600,
           onPrimary: Colors.white,
         ),
@@ -95,9 +97,11 @@ class _MainAppState extends State<MainApp> {
           backgroundColor: Colors.indigo.shade700,
           foregroundColor: Colors.white,
         ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.amber.shade700,
-          textTheme: ButtonTextTheme.primary,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.indigo.shade700),
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+          ),
         ),
       ),
       themeMode: themeProvider.themeMode,

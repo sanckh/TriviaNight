@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(50), top: Radius.circular(50)),
       ),
@@ -39,10 +39,14 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildStatCard(String title, String value, IconData icon) {
     return Card(
       elevation: 5,
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: Text(value),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        child: ListTile(
+          leading: Icon(icon, size: 30),
+          title: Text(title, style: TextStyle(fontSize: 20)),
+          trailing: Text(value, style: TextStyle(fontSize: 20)),
+        ),
       ),
     );
   }
@@ -63,8 +67,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  //signed in brought directly to settings, needs to go to home screen
-
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
@@ -79,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue.shade300,
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(50)),
               ),
@@ -102,10 +104,9 @@ class ProfileScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade400,
                       padding:
                           EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      textStyle: TextStyle(fontSize: 18),
+                      textStyle: TextStyle(fontSize: 18, color: Colors.black),
                     ),
                     child: Text('Edit Profile'),
                   ),
