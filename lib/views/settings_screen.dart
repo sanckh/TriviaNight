@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:provider/provider.dart';
-import 'package:trivia_night/main.dart';
 import 'package:trivia_night/views/login_screen.dart';
 import 'package:trivia_night/widgets/theme_provider.dart';
 import 'package:trivia_night/widgets/update_password.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trivia_night/widgets/update_username.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -45,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Text('Sign Out'),
                 ),
+                SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -61,6 +61,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   child: Text('Update Password'),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UpdateUsernameScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade400,
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  child: Text('Update Username'),
                 ),
                 SwitchListTile(
                     title: Text('Dark Theme'),
