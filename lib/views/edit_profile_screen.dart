@@ -13,12 +13,10 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  late User _user;
 
   @override
   void initState() {
     super.initState();
-    _user = widget.user;
   }
 
   @override

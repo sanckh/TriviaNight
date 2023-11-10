@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trivia_night/views/register_screen.dart';
-import 'package:trivia_night/views/home_screen.dart';
 import 'package:trivia_night/widgets/main_navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {

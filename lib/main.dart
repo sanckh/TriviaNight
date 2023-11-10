@@ -7,16 +7,11 @@ import 'package:trivia_night/widgets/theme_provider.dart';
 import 'firebase_options.dart';
 
 //Screens
-import 'package:trivia_night/views/home_screen.dart';
 import 'package:trivia_night/views/login_screen.dart';
-import 'package:trivia_night/views/profile_screen.dart';
-import 'package:trivia_night/views/settings_screen.dart';
 
 //Models
-import 'package:trivia_night/models/users.dart';
 
 //Services
-import 'package:trivia_night/services/user_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +33,6 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {

@@ -24,7 +24,7 @@ Future<List<Question>> getQuestions(Category category, int? total, String? diffi
     List<Map<String, dynamic>> questions = List<Map<String, dynamic>>.from(json.decode(res.body)["results"]);
     return Question.fromData(questions);
   } else {
-    print('Failed to load questions. HTTP Status Code: ${res?.statusCode}');
+    print('Failed to load questions. HTTP Status Code: ${res.statusCode}');
     return []; // Returning an empty list or you could throw an exception
   }
 }
