@@ -1,10 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:trivia_night/models/users.dart';
-import 'package:trivia_night/views/edit_profile_screen.dart';
 import 'package:trivia_night/services/user_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -28,9 +27,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       if (image != null) {
         _image = File(image.path);
+        uploadImageToFirebase(context);
       } else {
         print('No image selected.');
       }
+    });
+  }
+
+  Future uploadImageToFirebase(BuildContext context) async {
+    String fileName = _user.id;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child("avatar/$fileName");
+    UploadTask uploadTask = ref.putFile(_image!);
+    await uploadTask.then((res) async {
+      await res.ref.getDownloadURL().then((value) async {
+        await _userService.updateUserAvatar(_user.id, value);
+        setState(() {
+          _user.avatar = value;
+        });
+      });
     });
   }
 
@@ -60,8 +75,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     )
                   : CircleAvatar(
                       radius: 60,
-                      child: Image.asset(
-                          "assets/images/triviaplaceholdericon.png"),
+                      backgroundImage: AssetImage(
+                          "assets/triviaplaceholdericon.png"),
                     ),
               Positioned(
                 bottom: -10,

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:trivia_night/models/users.dart';
 
 class UserService {
@@ -41,14 +40,10 @@ class UserService {
     });
   }
 
-  pickImage(ImageSource source) async {
-    final ImagePicker _imagePicker = ImagePicker();
-    XFile? _file = await _imagePicker.pickImage(source: source);
-
-    if(_file != null){
-      return await _file.readAsBytes();
-    }
-
-    print('No image selected');
+  Future updateUserAvatar(String userId, String avatar) async {
+    DocumentReference userRef = _usersRef.doc(userId);
+    await userRef.update({
+      'avatar': avatar,
+    });
   }
 }
