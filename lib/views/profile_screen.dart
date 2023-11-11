@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:trivia_night/models/users.dart';
 import 'package:trivia_night/views/edit_profile_screen.dart';
+import 'package:trivia_night/services/user_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -13,6 +17,22 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User _user;
+  final UserService _userService = UserService();
+
+  final _picker = ImagePicker();
+  File? _image;
+
+  Future getImage() async {
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (image != null) {
+        _image = File(image.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -32,16 +52,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Center(
         child: Column(
           children: [
-            CircleAvatar(
-              backgroundImage: _user.avatar.startsWith('http')
-                  ? NetworkImage(_user.avatar) as ImageProvider<Object>
-                  : AssetImage(_user.avatar),
-              radius: 60,
-            ),
+            Stack(children: [
+              _image != null
+                  ? CircleAvatar(
+                      backgroundImage: FileImage(_image!),
+                      radius: 60,
+                    )
+                  : CircleAvatar(
+                      radius: 60,
+                      child: Image.asset(
+                          "assets/images/triviaplaceholdericon.png"),
+                    ),
+              Positioned(
+                bottom: -10,
+                left: 80,
+                child: IconButton(
+                  onPressed: getImage,
+                  icon: Icon(Icons.add_a_photo),
+                ),
+              )
+            ]),
             SizedBox(height: 15),
             Text(
               _user.username,
-              style: Theme.of(context).textTheme.headline6?.copyWith(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ), // Updated to use theme text style
             ),
@@ -103,23 +137,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   _buildProfileStats(),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfileScreen(user: _user),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade400,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      textStyle: TextStyle(fontSize: 18),
-                    ),
-                    child: Text('Edit Profile'),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => EditProfileScreen(user: _user),
+                  //       ),
+                  //     );
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: Colors.blue.shade400,
+                  //     padding:
+                  //         EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  //     textStyle: TextStyle(fontSize: 18),
+                  //   ),
+                  //   child: Text('Edit Profile'),
+                  // ),
                 ],
               ),
             ),
